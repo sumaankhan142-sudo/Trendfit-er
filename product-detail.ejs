@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendfit'er // <%= product.name %></title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Unbounded:wght@500;800&display=swap');
+
+        :root {
+            --bg-color: #060606;
+            --text-color: #ffffff;
+            --accent-color: #00FF87;
+            --secondary-color: #1ed760;
+            --card-bg: #0f0f0f;
+            --border-color: #1a1a1a;
+            --card-border: #2a2a2a;
+            --text-muted: #666666;
+            --shadow-accent: 0 10px 40px rgba(0, 255, 135, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            padding: 0;
+        }
+
+        /* Header (Matching storefront) */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 5%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(6, 6, 6, 0.9);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .logo a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-color);
+            text-shadow: 0 0 8px var(--accent-color);
+        }
+
+        .nav-cart-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-cart-btn:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-cart-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: none;
+            stroke: var(--text-color);
+            stroke-width: 2;
+        }
+
+        /* Detail Container */
+        .pdp-container {
+            max-width: 1300px;
+            margin: 60px auto 120px;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .main-image-wrapper {
+            width: 100%;
+            height: 600px;
+            background: #0b0b0b;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        /* Thumbnails Slidebar (Similar to Amazon) */
+        .thumbnails {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 0;
+            cursor: grab;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .thumbnails::-webkit-scrollbar {
+            height: 3px;
+        }
+        
+        .thumbnails::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .thumbnails::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 4px;
+        }
+
+        .thumbnail {
+            width: 90px;
+            height: 90px;
+            background: #0b0b0b;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .thumbnail:hover {
+            transform: translateY(-2px);
+        }
+
+        .thumbnail.active {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px rgba(0, 255, 135, 0.2);
+        }
+
+        .thumbnail-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Details Section */
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            padding-top: 20px;
+        }
+
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .badge-hot {
+            display: inline-block;
+            background: var(--accent-color);
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 30px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .product-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        .product-price {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent-color);
+            letter-spacing: -1.5px;
+        }
+
+        .product-description {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        /* Actions Section */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .quantity-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stock-tag {
+            color: var(--secondary-color);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 16px;
+        }
+
+        .pdp-btn {
+            flex: 1;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 18px 24px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            border: none;
+        }
+
+        .pdp-add-to-bag {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .pdp-add-to-bag:hover {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 135, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .pdp-buy-now {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        .pdp-buy-now:hover {
+            background: #fff;
+            box-shadow: 0 0 30px rgba(0, 255, 135, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .wishlist-pdp {
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #111;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .wishlist-pdp:hover {
+            border-color: #ff4444;
+            background: #222;
+            transform: scale(1.05);
+        }
+
+        .wishlist-pdp svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2.5;
+            transition: stroke 0.3s ease;
+        }
+
+        .wishlist-pdp:hover svg {
+            stroke: #ff4444;
+        }
+
+        /* Cart Notification styles (Matching storefront) */
+        .notification {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: #0d0d0d;
+            border: 1px solid #262626;
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 135, 0.15);
+            z-index: 1000;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            min-width: 320px;
+            border-left: 4px solid #00FF87;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+        }
+
+        .notification-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .notification-text .title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .notification-text .sub-text {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .progress-bar {
+            height: 3px;
+            width: 100%;
+            background: #222;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: #00FF87;
+            animation: shrink 2.5s linear forwards;
+        }
+
+        @keyframes shrink {
+            0% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        /* Small Screen styling */
+        @media (max-width: 1024px) {
+            .pdp-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .main-image-wrapper {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><a href="/">Trend<span>fit'er</span></a></div>
+        <div class="nav-links">
+    <a href="/">Shop</a>
+    <a href="/cart" class="nav-cart-btn" aria-label="Cart" style="border: none; background: transparent; padding: 0;">
+    <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; stroke: var(--text-muted);">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <span id="cart-count" style="margin-left: 5px; font-size: 12px; color: var(--accent-color);">0</span>
+        </a>
+        </div>
+    </header>
+
+    <main class="pdp-container">
+        <section class="image-gallery">
+            <div class="main-image-wrapper">
+                <% let mainImageSrc = product.imageUrls && product.imageUrls.length > 0 ? product.imageUrls[0] : product.imageUrl; %>
+                <img id="main-image" class="main-image" src="<%= mainImageSrc %>" alt="<%= product.name %>">
+            </div>
+            
+            <% if (product.imageUrls && product.imageUrls.length > 1) { %>
+                <div id="thumbnails" class="thumbnails">
+                    <% product.imageUrls.forEach((url, index) => { %>
+                        <div class="thumbnail <%= index === 0 ? 'active' : '' %>" onclick="changeImage(this, '<%= url %>')">
+                            <img class="thumbnail-img" src="<%= url %>" alt="<%= product.name %> view <%= index + 1 %>">
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </section>
+
+        <section class="details">
+            <div class="header-info">
+                <div class="badge-hot">Hot Drop</div>
+                <h1 class="product-title"><%= product.name %></h1>
+                <div class="product-price">PKR <%= product.price %></div>
+            </div>
+            
+            <p class="product-description"><%= product.description %></p>
+            
+            <div class="actions">
+                <div class="quantity-wrapper">
+                    <span class="stock-tag">Status // IN STOCK // Limited</span>
+                </div>
+                
+                <div class="action-btns">
+                    <button type="button" class="pdp-btn pdp-add-to-bag" onclick="addToBag('<%= product.id %>');">Add to Bag</button>
+                    <a href="/buy/<%= product.id %>" class="pdp-btn pdp-buy-now">Buy Now</a>
+                    
+                    <button class="wishlist-pdp" title="Save to collection">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="cart-notification" class="notification">
+        <div class="notification-content">
+            <div class="notification-icon">⚡</div>
+            <div class="notification-text">
+                <span class="title">ADDED TO BAG</span>
+                <span class="sub-text">Item secured. Ready for Drop #01.</span>
+            </div>
+        </div>
+        <div class="progress-bar"></div>
+    </div>
+
+    <script>
+        // Gallery logic (Similar to Amazon)
+        function changeImage(element, newSrc) {
+            // Change main image
+            document.getElementById('main-image').src = newSrc;
+            
+            // Handle thumbnail active state
+            const thumbnails = document.getElementById('thumbnails').getElementsByClassName('thumbnail');
+            for (let i = 0; i < thumbnails.length; i++) {
+                thumbnails[i].classList.remove('active');
+            }
+            element.classList.add('active');
+        }
+        async function addToBag(productId) {
+    try {
+        const response = await fetch(`/cart/add/${productId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update the cart count in the header if it's returned by the server
+            if (data.cartCount !== undefined) {
+                document.getElementById('cart-count').innerText = data.cartCount;
+            } else {
+                // Otherwise, increment the current count by 1 as a fallback
+                const countSpan = document.getElementById('cart-count');
+                countSpan.innerText = parseInt(countSpan.innerText || '0') + 1;
+            }
+            showNotification();
+        }
+    } catch (error) {
+        console.error('Error adding to cart:', error);
+    }
+}
+
+        function showNotification() {
+            const notifyBox = document.getElementById('cart-notification');
+            notifyBox.classList.add('show');
+            
+            setTimeout(() => {
+                notifyBox.classList.remove('show');
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

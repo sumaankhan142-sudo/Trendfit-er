@@ -1,0 +1,593 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendfit'er // Checkout</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Unbounded:wght@500;800&display=swap');
+
+        :root {
+            --bg-color: #060606;
+            --text-color: #ffffff;
+            --accent-color: #00FF87;
+            --card-bg: #0f0f0f;
+            --border-color: #1a1a1a;
+            --card-border: #2a2a2a;
+            --text-muted: #666666;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 5%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(6,6,6,0.9);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        .logo span { color: var(--accent-color); }
+        .logo a { text-decoration: none; color: inherit; }
+
+        .checkout-container {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 5%;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        .checkout-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 28px;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+
+        .checkout-title span { color: var(--accent-color); }
+
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .form-group input {
+            background: #090909;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 12px rgba(0,255,135,0.12);
+        }
+
+        .btn-place-order {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-color);
+            color: #000;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 800;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .btn-place-order:hover {
+            background: #fff;
+            box-shadow: 0 0 25px rgba(0,255,135,0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Order Summary */
+        .summary-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px;
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .summary-heading {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            letter-spacing: -0.3px;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-thumb {
+            width: 52px;
+            height: 52px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .summary-item-name {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .summary-item-meta { color: var(--text-muted); font-size: 12px; }
+
+        .summary-item-price {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 13px;
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .summary-row.total {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            margin-top: 4px;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 0;
+        }
+
+        .summary-row.total .price { color: var(--accent-color); }
+
+        /* Payment Options */
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .payment-option { cursor: pointer; }
+
+        .payment-option input[type="radio"] { display: none; }
+
+        .payment-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #090909;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            transition: all 0.2s ease;
+        }
+
+        .payment-option input[type="radio"]:checked + .payment-card {
+            border-color: var(--accent-color);
+            background: rgba(0,255,135,0.05);
+            box-shadow: 0 0 12px rgba(0,255,135,0.1);
+        }
+
+        .payment-icon { font-size: 22px; }
+
+        .payment-name {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .payment-sub { font-size: 11px; color: var(--text-muted); }
+
+        .payment-detail-box {
+            margin-top: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .account-info-box {
+            background: #090909;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .account-info-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+        }
+
+        .account-info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .account-info-row:last-of-type { border-bottom: none; }
+        .account-info-row span { color: var(--text-muted); }
+        .account-info-row strong { color: var(--accent-color); }
+
+        .account-info-note {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(0,255,135,0.04);
+            border-radius: 8px;
+            border: 1px solid rgba(0,255,135,0.1);
+        }
+
+        .cod-fee-note {
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: rgba(0,255,135,0.05);
+            border: 1px solid rgba(0,255,135,0.15);
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        #city-select {
+            width: 100%;
+            background: #090909;
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        #city-select:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 12px rgba(0,255,135,0.12);
+        }
+
+        #summary-shipping-row { display: none; }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"><a href="/">Trend<span>fit'er</span></a></div>
+</header>
+
+<main class="checkout-container">
+
+    <!-- LEFT: Form -->
+    <div>
+        <h1 class="checkout-title">Secure <span>Checkout</span></h1>
+        <div class="form-card">
+            <form action="/order/complete" method="POST">
+
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <input type="text" id="address" name="address" placeholder="123 Street, City" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+92 XXX XXXXXXX" required>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <div class="payment-options">
+
+                        <label class="payment-option" onclick="showPayment('cod')">
+                            <input type="radio" name="paymentMethod" value="cod" required>
+                            <div class="payment-card">
+                                <span class="payment-icon">🚚</span>
+                                <div>
+                                    <div class="payment-name">Cash on Delivery</div>
+                                    <div class="payment-sub">Extra charges apply by city</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="payment-option" onclick="showPayment('jazzcash')">
+                            <input type="radio" name="paymentMethod" value="jazzcash">
+                            <div class="payment-card">
+                                <span class="payment-icon">📱</span>
+                                <div>
+                                    <div class="payment-name">JazzCash</div>
+                                    <div class="payment-sub">Mobile wallet payment</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="payment-option" onclick="showPayment('easypaisa')">
+                            <input type="radio" name="paymentMethod" value="easypaisa">
+                            <div class="payment-card">
+                                <span class="payment-icon">💚</span>
+                                <div>
+                                    <div class="payment-name">Easypaisa</div>
+                                    <div class="payment-sub">Mobile wallet payment</div>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="payment-option" onclick="showPayment('bank')">
+                            <input type="radio" name="paymentMethod" value="bank">
+                            <div class="payment-card">
+                                <span class="payment-icon">🏦</span>
+                                <div>
+                                    <div class="payment-name">Bank Transfer</div>
+                                    <div class="payment-sub">Direct bank deposit</div>
+                                </div>
+                            </div>
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- COD City Selector -->
+                <div id="cod-section" class="payment-detail-box" style="display:none;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Select Your City</label>
+                        <select name="city" id="city-select" onchange="updateCOD()">
+                            <option value="">-- Choose City --</option>
+                            <option value="Karachi" data-fee="100">Karachi — PKR 100</option>
+                            <option value="Lahore" data-fee="150">Lahore — PKR 150</option>
+                            <option value="Islamabad" data-fee="150">Islamabad — PKR 150</option>
+                            <option value="Rawalpindi" data-fee="150">Rawalpindi — PKR 150</option>
+                            <option value="Faisalabad" data-fee="150">Faisalabad — PKR 150</option>
+                            <option value="Peshawar" data-fee="250">Peshawar — PKR 250</option>
+                            <option value="Quetta" data-fee="250">Quetta — PKR 250</option>
+                            <option value="Multan" data-fee="200">Multan — PKR 200</option>
+                            <option value="Hyderabad" data-fee="150">Hyderabad — PKR 150</option>
+                            <option value="Other" data-fee="200">Other City — PKR 200</option>
+                        </select>
+                        <div id="cod-fee-info" class="cod-fee-note" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- JazzCash Details -->
+                <div id="jazzcash-section" class="payment-detail-box" style="display:none;">
+                    <div class="account-info-box">
+                        <div class="account-info-title">Send payment to:</div>
+                        <div class="account-info-row"><span>Account Name</span><strong>Trendfit'er</strong></div>
+                        <div class="account-info-row"><span>JazzCash Number</span><strong>0300-1234567</strong></div>
+                        <div class="account-info-note">After sending, enter your transaction ID below</div>
+                        <div class="form-group" style="margin-top:12px; margin-bottom:0;">
+                            <label>Transaction ID</label>
+                            <input type="text" name="transactionId" placeholder="e.g. TXN123456789">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Easypaisa Details -->
+                <div id="easypaisa-section" class="payment-detail-box" style="display:none;">
+                    <div class="account-info-box">
+                        <div class="account-info-title">Send payment to:</div>
+                        <div class="account-info-row"><span>Account Name</span><strong>Trendfit'er</strong></div>
+                        <div class="account-info-row"><span>Easypaisa Number</span><strong>0301-7654321</strong></div>
+                        <div class="account-info-note">After sending, enter your transaction ID below</div>
+                        <div class="form-group" style="margin-top:12px; margin-bottom:0;">
+                            <label>Transaction ID</label>
+                            <input type="text" name="transactionId" placeholder="e.g. EP123456789">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Transfer Details -->
+                <div id="bank-section" class="payment-detail-box" style="display:none;">
+                    <div class="account-info-box">
+                        <div class="account-info-title">Bank Account Details:</div>
+                        <div class="account-info-row"><span>Bank Name</span><strong>HBL / Meezan</strong></div>
+                        <div class="account-info-row"><span>Account Title</span><strong>Trendfit'er</strong></div>
+                        <div class="account-info-row"><span>Account Number</span><strong>1234-5678-9012-3456</strong></div>
+                        <div class="account-info-row"><span>IBAN</span><strong>PK00HBL1234567890123456</strong></div>
+                        <div class="account-info-note">After transfer, enter your transaction ID below</div>
+                        <div class="form-group" style="margin-top:12px; margin-bottom:0;">
+                            <label>Transaction ID</label>
+                            <input type="text" name="transactionId" placeholder="e.g. TRF123456789">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden fields -->
+                <input type="hidden" name="codFee" id="cod-fee-input" value="0">
+                <input type="hidden" name="cityName" id="city-name-input" value="">
+
+                <button type="submit" class="btn-place-order">Place Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RIGHT: Order Summary -->
+    <div class="summary-panel">
+        <h2 class="summary-heading">Order Summary</h2>
+
+        <% cartItems.forEach(item => { %>
+            <div class="summary-item">
+                <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="summary-thumb">
+                <div>
+                    <div class="summary-item-name"><%= item.name %></div>
+                    <div class="summary-item-meta">Qty: <%= item.quantity || 1 %></div>
+                </div>
+                <div class="summary-item-price">PKR <%= item.price * (item.quantity || 1) %></div>
+            </div>
+        <% }) %>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>PKR <%= cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0) %></span>
+        </div>
+
+        <div class="summary-row" id="summary-shipping-row">
+            <span>COD Delivery</span>
+            <span id="summary-shipping" style="color:#ff9944;"></span>
+        </div>
+
+        <div class="summary-row total">
+            <span>Total</span>
+            <span class="price" id="summary-total">PKR <%= cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0) %></span>
+        </div>
+
+        <input type="hidden" id="base-total" value="<%= cartItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0) %>">
+    </div>
+
+</main>
+
+<footer>&copy; 2026 Trendfit'er // All Rights Reserved.</footer>
+
+<script>
+    function showPayment(method) {
+        ['cod', 'jazzcash', 'easypaisa', 'bank'].forEach(m => {
+            document.getElementById(`${m}-section`).style.display = 'none';
+        });
+
+        document.getElementById(`${method}-section`).style.display = 'block';
+
+        if (method !== 'cod') {
+            document.getElementById('cod-fee-input').value = '0';
+            document.getElementById('city-name-input').value = '';
+            document.getElementById('city-select').value = '';
+            document.getElementById('cod-fee-info').style.display = 'none';
+            document.getElementById('summary-shipping-row').style.display = 'none';
+            updateSummaryFee(0);
+        }
+    }
+
+    function updateCOD() {
+        const select = document.getElementById('city-select');
+        const option = select.options[select.selectedIndex];
+        const fee = parseInt(option.getAttribute('data-fee')) || 0;
+        const city = option.value;
+
+        document.getElementById('cod-fee-input').value = fee;
+        document.getElementById('city-name-input').value = city;
+
+        const feeInfo = document.getElementById('cod-fee-info');
+        const shippingRow = document.getElementById('summary-shipping-row');
+
+        if (city && fee > 0) {
+            feeInfo.style.display = 'block';
+            feeInfo.textContent = `COD charge for ${city}: PKR ${fee}`;
+            shippingRow.style.display = 'flex';
+            document.getElementById('summary-shipping').textContent = `PKR ${fee}`;
+        } else {
+            feeInfo.style.display = 'none';
+            shippingRow.style.display = 'none';
+        }
+
+        updateSummaryFee(fee);
+    }
+
+    function updateSummaryFee(fee) {
+        const totalEl = document.getElementById('summary-total');
+        const baseTotal = parseInt(document.getElementById('base-total').value) || 0;
+        if (totalEl) totalEl.textContent = `PKR ${baseTotal + fee}`;
+    }
+</script>
+
+</body>
+</html>

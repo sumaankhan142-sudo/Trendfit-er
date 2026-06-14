@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendfit'er // Orders</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Unbounded:wght@500;800&display=swap');
+
+        :root {
+            --bg-color: #060606;
+            --text-color: #ffffff;
+            --accent-color: #00FF87;
+            --border-color: #1a1a1a;
+            --card-bg: #0f0f0f;
+            --card-border: #2a2a2a;
+            --text-muted: #666666;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(6,6,6,0.95);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .logo span { color: var(--accent-color); }
+        .logo a { text-decoration: none; color: inherit; }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: #fff; }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 5%;
+        }
+
+        /* ── Page Header ── */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .page-title span { color: var(--accent-color); }
+
+        /* ── Stats Bar ── */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 16px 20px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        /* ── Toolbar ── */
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 220px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 10px 16px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus { border-color: var(--accent-color); }
+        .search-box::placeholder { color: var(--text-muted); }
+
+        .filter-select {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filter-select:focus { border-color: var(--accent-color); }
+
+        .results-count {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        /* ── Order Table Header ── */
+        .orders-table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.2fr 80px;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 8px;
+        }
+
+        /* ── Order Row ── */
+        .order-row {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: border-color 0.2s;
+            overflow: hidden;
+        }
+
+        .order-row:hover { border-color: #3a3a3a; }
+
+        .order-row-summary {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1.2fr 80px;
+            gap: 8px;
+            padding: 14px 20px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .order-customer-name {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .order-customer-phone {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .order-id-small {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .order-date-small {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .order-total-small {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        /* Payment badge */
+        .payment-badge {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .badge-cod { background: rgba(255,153,68,0.15); color: #ff9944; border: 1px solid rgba(255,153,68,0.3); }
+        .badge-jazzcash { background: rgba(165,0,255,0.15); color: #a500ff; border: 1px solid rgba(165,0,255,0.3); }
+        .badge-easypaisa { background: rgba(0,255,135,0.1); color: var(--accent-color); border: 1px solid rgba(0,255,135,0.2); }
+        .badge-bank { background: rgba(0,136,255,0.15); color: #0088ff; border: 1px solid rgba(0,136,255,0.3); }
+
+        /* Status badge */
+        .status-badge {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .status-pending { background: rgba(255,68,68,0.1); color: #ff4444; border: 1px solid rgba(255,68,68,0.3); }
+        .status-processing { background: rgba(255,193,7,0.1); color: #ffc107; border: 1px solid rgba(255,193,7,0.3); }
+        .status-shipped { background: rgba(0,136,255,0.1); color: #0088ff; border: 1px solid rgba(0,136,255,0.3); }
+        .status-delivered { background: rgba(0,255,135,0.1); color: var(--accent-color); border: 1px solid rgba(0,255,135,0.2); }
+
+        /* Expand button */
+        .expand-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        .expand-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* ── Expanded Detail ── */
+        .order-detail {
+            display: none;
+            border-top: 1px solid var(--border-color);
+            padding: 20px;
+            background: #080808;
+        }
+
+        .order-detail.open { display: block; }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-section-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .detail-field {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 7px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-field:last-child { border-bottom: none; }
+        .detail-field span { color: var(--text-muted); }
+        .detail-field strong { color: #fff; }
+
+        .items-mini {
+            margin-top: 4px;
+        }
+
+        .item-mini-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .item-mini-row:last-child { border-bottom: none; }
+
+        .item-mini-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .item-mini-name {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            flex: 1;
+        }
+
+        .item-mini-qty { font-size: 11px; color: var(--text-muted); }
+        .item-mini-price { font-size: 12px; color: var(--accent-color); font-weight: 700; }
+
+        .detail-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cod-breakdown {
+            font-size: 12px;
+            color: #ff9944;
+        }
+
+        .total-big {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        /* ── Status Update ── */
+        .status-select {
+            background: #111;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 11px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* ── Pagination ── */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 28px;
+        }
+
+        .page-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .page-btn:hover, .page-btn.active {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .page-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 0 8px;
+        }
+
+        /* ── Empty ── */
+        .empty-text {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 80px 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-bar { grid-template-columns: repeat(3, 1fr); }
+            .orders-table-header { display: none; }
+            .order-row-summary { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 600px) {
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"><a href="/">Trend<span>fit'er</span></a></div>
+    <div class="nav-links"><a href="/admin">← Back to Admin</a></div>
+</header>
+
+<main class="page-container">
+
+    <div class="page-header">
+        <h1 class="page-title">All <span>Orders</span></h1>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-label">Total Orders</div>
+            <div class="stat-value" id="stat-total"><%= orders.length %></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value">PKR <span id="stat-revenue"><%= orders.reduce((s, o) => s + (parseFloat(o.total) || 0), 0) %></span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Items Sold</div>
+            <div class="stat-value" id="stat-items"><%= orders.reduce((s, o) => s + o.items.reduce((si, i) => si + (i.quantity || 1), 0), 0) %></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">COD Orders</div>
+            <div class="stat-value"><%= orders.filter(o => o.paymentMethod === 'cod').length %></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Paid Online</div>
+            <div class="stat-value"><%= orders.filter(o => o.paymentMethod !== 'cod').length %></div>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <input
+            type="text"
+            class="search-box"
+            id="search-input"
+            placeholder="Search by name, phone, order ID..."
+            oninput="filterOrders()"
+        >
+        <select class="filter-select" id="payment-filter" onchange="filterOrders()">
+            <option value="">All Payments</option>
+            <option value="cod">COD</option>
+            <option value="jazzcash">JazzCash</option>
+            <option value="easypaisa">Easypaisa</option>
+            <option value="bank">Bank</option>
+        </select>
+        <select class="filter-select" id="status-filter" onchange="filterOrders()">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+        </select>
+        <select class="filter-select" id="sort-select" onchange="filterOrders()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="highest">Highest Total</option>
+            <option value="lowest">Lowest Total</option>
+        </select>
+        <span class="results-count" id="results-count"></span>
+    </div>
+
+    <!-- Table Header -->
+    <div class="orders-table-header">
+        <div>Customer</div>
+        <div>Order ID</div>
+        <div>Date</div>
+        <div>Payment</div>
+        <div>Status</div>
+        <div>Total</div>
+        <div></div>
+    </div>
+
+    <!-- Orders List -->
+    <div id="orders-list">
+        <% if (orders.length > 0) { %>
+            <% orders.slice().reverse().forEach((order, index) => { %>
+                <div class="order-row"
+                    data-customer="<%= order.customerName.toLowerCase() %>"
+                    data-phone="<%= order.phone %>"
+                    data-orderid="<%= order.id %>"
+                    data-payment="<%= order.paymentMethod || 'cod' %>"
+                    data-status="pending"
+                    data-total="<%= order.total %>"
+                    data-date="<%= order.id %>">
+
+                    <!-- Summary Row -->
+                    <div class="order-row-summary" onclick="toggleDetail('detail-<%= order.id %>', this)">
+                        <div>
+                            <div class="order-customer-name"><%= order.customerName %></div>
+                            <div class="order-customer-phone"><%= order.phone %> · <%= order.city || 'N/A' %></div>
+                        </div>
+                        <div>
+                            <div class="order-id-small">#<%= order.id %></div>
+                        </div>
+                        <div class="order-date-small"><%= order.date %></div>
+                        <div>
+                            <span class="payment-badge badge-<%= order.paymentMethod || 'cod' %>">
+                                <%= (order.paymentMethod || 'cod').toUpperCase() %>
+                            </span>
+                        </div>
+                        <div>
+                            <select class="status-select" onchange="updateStatus(this, '<%= order.id %>')" onclick="event.stopPropagation()">
+                                <option value="pending">🔴 Pending</option>
+                                <option value="processing">🟡 Processing</option>
+                                <option value="shipped">🔵 Shipped</option>
+                                <option value="delivered">🟢 Delivered</option>
+                            </select>
+                        </div>
+                        <div class="order-total-small">PKR <%= order.total %></div>
+                        <div>
+                            <button class="expand-btn">View ▾</button>
+                        </div>
+                    </div>
+
+                    <!-- Expanded Detail -->
+                    <div class="order-detail" id="detail-<%= order.id %>">
+                        <div class="detail-grid">
+                            <!-- Customer Info -->
+                            <div>
+                                <div class="detail-section-title">Customer Info</div>
+                                <div class="detail-field"><span>Name</span><strong><%= order.customerName %></strong></div>
+                                <div class="detail-field"><span>Phone</span><strong><%= order.phone %></strong></div>
+                                <div class="detail-field"><span>Address</span><strong><%= order.address %></strong></div>
+                                <div class="detail-field"><span>City</span><strong><%= order.city || 'N/A' %></strong></div>
+                            </div>
+                            <!-- Payment Info -->
+                            <div>
+                                <div class="detail-section-title">Payment Info</div>
+                                <div class="detail-field">
+                                    <span>Method</span>
+                                    <strong style="color: var(--accent-color)"><%= (order.paymentMethod || 'cod').toUpperCase() %></strong>
+                                </div>
+                                <div class="detail-field">
+                                    <span>Transaction ID</span>
+                                    <strong><%= order.paymentMethod === 'cod' ? '— Cash on Delivery —' : (order.transactionId || 'N/A') %></strong>
+                                </div>
+                                <div class="detail-field"><span>Subtotal</span><strong>PKR <%= order.subtotal || order.total %></strong></div>
+                                <% if (order.codFee > 0) { %>
+                                    <div class="detail-field">
+                                        <span>COD Fee (<%= order.city %>)</span>
+                                        <strong style="color:#ff9944">PKR <%= order.codFee %></strong>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <!-- Items -->
+                        <div class="detail-section-title">Items Ordered (<%= order.items.length %>)</div>
+                        <div class="items-mini">
+                            <% order.items.forEach(item => { %>
+                                <div class="item-mini-row">
+                                    <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="item-mini-img">
+                                    <div class="item-mini-name"><%= item.name %></div>
+                                    <div class="item-mini-qty">x<%= item.quantity || 1 %></div>
+                                    <div class="item-mini-price">PKR <%= (parseFloat(item.price) * (item.quantity || 1)).toFixed(0) %></div>
+                                </div>
+                            <% }) %>
+                        </div>
+
+                        <div class="detail-footer">
+                            <div>
+                                <% if (order.codFee > 0) { %>
+                                    <span class="cod-breakdown">PKR <%= order.subtotal %> + COD PKR <%= order.codFee %></span>
+                                <% } %>
+                            </div>
+                            <div>
+                                <span style="color: var(--text-muted); font-size:12px; margin-right:12px;">ORDER TOTAL</span>
+                                <span class="total-big">PKR <%= order.total %></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="empty-text">No orders yet.</div>
+        <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" id="pagination"></div>
+
+</main>
+
+<script>
+    const ORDERS_PER_PAGE = 15;
+    let currentPage = 1;
+    let filteredRows = [];
+
+    function toggleDetail(id, summaryEl) {
+        const detail = document.getElementById(id);
+        const btn = summaryEl.querySelector('.expand-btn');
+        const isOpen = detail.classList.contains('open');
+        detail.classList.toggle('open');
+        btn.textContent = isOpen ? 'View ▾' : 'Close ▴';
+    }
+
+    function updateStatus(select, orderId) {
+        const val = select.value;
+        // In a real DB app you'd POST to /admin/order/status
+        // For now just update the data attribute so filtering works
+        select.closest('.order-row').setAttribute('data-status', val);
+    }
+
+    function getPaymentBadgeClass(method) {
+        const map = { cod: 'badge-cod', jazzcash: 'badge-jazzcash', easypaisa: 'badge-easypaisa', bank: 'badge-bank' };
+        return map[method] || 'badge-cod';
+    }
+
+    function filterOrders() {
+        const search = document.getElementById('search-input').value.toLowerCase().trim();
+        const paymentFilter = document.getElementById('payment-filter').value;
+        const statusFilter = document.getElementById('status-filter').value;
+        const sortVal = document.getElementById('sort-select').value;
+
+        const allRows = Array.from(document.querySelectorAll('.order-row'));
+
+        filteredRows = allRows.filter(row => {
+            const customer = row.getAttribute('data-customer') || '';
+            const phone = row.getAttribute('data-phone') || '';
+            const orderId = row.getAttribute('data-orderid') || '';
+            const payment = row.getAttribute('data-payment') || '';
+            const status = row.getAttribute('data-status') || '';
+
+            const matchSearch = !search ||
+                customer.includes(search) ||
+                phone.includes(search) ||
+                orderId.includes(search);
+
+            const matchPayment = !paymentFilter || payment === paymentFilter;
+            const matchStatus = !statusFilter || status === statusFilter;
+
+            return matchSearch && matchPayment && matchStatus;
+        });
+
+        // Sort
+        filteredRows.sort((a, b) => {
+            const totalA = parseFloat(a.getAttribute('data-total')) || 0;
+            const totalB = parseFloat(b.getAttribute('data-total')) || 0;
+            const dateA = parseFloat(a.getAttribute('data-date')) || 0;
+            const dateB = parseFloat(b.getAttribute('data-date')) || 0;
+
+            if (sortVal === 'newest') return dateB - dateA;
+            if (sortVal === 'oldest') return dateA - dateB;
+            if (sortVal === 'highest') return totalB - totalA;
+            if (sortVal === 'lowest') return totalA - totalB;
+            return 0;
+        });
+
+        document.getElementById('results-count').textContent =
+            `${filteredRows.length} of ${allRows.length} orders`;
+
+        currentPage = 1;
+        renderPage();
+    }
+
+    function renderPage() {
+        const allRows = Array.from(document.querySelectorAll('.order-row'));
+
+        // Hide all
+        allRows.forEach(row => row.style.display = 'none');
+
+        // Show only current page of filtered
+        const start = (currentPage - 1) * ORDERS_PER_PAGE;
+        const end = start + ORDERS_PER_PAGE;
+        const pageRows = filteredRows.length > 0 ? filteredRows : allRows;
+        pageRows.slice(start, end).forEach(row => row.style.display = 'block');
+
+        renderPagination(pageRows.length);
+    }
+
+    function renderPagination(total) {
+        const totalPages = Math.ceil(total / ORDERS_PER_PAGE);
+        const container = document.getElementById('pagination');
+        container.innerHTML = '';
+
+        if (totalPages <= 1) return;
+
+        // Prev
+        const prev = document.createElement('button');
+        prev.className = 'page-btn';
+        prev.textContent = '← Prev';
+        prev.disabled = currentPage === 1;
+        prev.onclick = () => { currentPage--; renderPage(); };
+        container.appendChild(prev);
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (totalPages > 7 && i > 3 && i < totalPages - 2 && Math.abs(i - currentPage) > 1) {
+                if (i === 4 || i === totalPages - 3) {
+                    const dots = document.createElement('span');
+                    dots.className = 'page-info';
+                    dots.textContent = '...';
+                    container.appendChild(dots);
+                }
+                continue;
+            }
+            const btn = document.createElement('button');
+            btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+            btn.textContent = i;
+            btn.onclick = ((page) => () => { currentPage = page; renderPage(); })(i);
+            container.appendChild(btn);
+        }
+
+        // Next
+        const next = document.createElement('button');
+        next.className = 'page-btn';
+        next.textContent = 'Next →';
+        next.disabled = currentPage === totalPages;
+        next.onclick = () => { currentPage++; renderPage(); };
+        container.appendChild(next);
+
+        const info = document.createElement('span');
+        info.className = 'page-info';
+        info.textContent = `Page ${currentPage} of ${totalPages}`;
+        container.appendChild(info);
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+        const allRows = Array.from(document.querySelectorAll('.order-row'));
+        filteredRows = allRows;
+        document.getElementById('results-count').textContent = `${allRows.length} orders`;
+        renderPage();
+    });
+</script>
+
+</body>
+</html>
