@@ -48,21 +48,7 @@ const drops = [
     "endDate": "2026-05-20T08:38",
     "dropNumber": 3
   },
-  {
-    "id": "1778663994535",
-    "theme": "summer Edition",
-    "label": "DROP #04",
-    "navLabel": "Drop #04",
-    "badge": "DROP 04 // SUMMER EDITION",
-    "title": "Hotness overcoming",
-    "subtitle": "be cool",
-    "active": false,
-    "soldOut": true,
-    "totalUnits": 15,
-    "unitsSold": 1,
-    "endDate": "2026-05-20T09:19",
-    "dropNumber": 4
-  }
+  
 ];
 
 module.exports = drops;
