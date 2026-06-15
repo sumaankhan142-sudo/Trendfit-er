@@ -33,21 +33,6 @@ const drops = [
     "theme": "",
     "dropNumber": 2
   },
-  {
-    "id": "1778661483132",
-    "theme": "Summer Edition",
-    "label": "DROP #03",
-    "navLabel": "Drop #03",
-    "badge": "DROP 03 // SUMMER EDITION",
-    "title": "New Drop Title",
-    "subtitle": "New drop subtitle.",
-    "active": false,
-    "soldOut": true,
-    "totalUnits": 0,
-    "unitsSold": 0,
-    "endDate": "2026-05-20T08:38",
-    "dropNumber": 3
-  },
   
 ];
 
